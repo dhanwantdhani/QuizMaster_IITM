@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Stats - Quiz Master{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('admin_stats') }}" class="nav-link active">Stats</a>
+            <a href="{{ url_for('admin_summary') }}" class="nav-link">Summary</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <button class="search-btn">Search</button>
+        </div>
+        <div class="user-welcome">
+            Welcome Admin
+        </div>
+    </div>
+
+    <!-- Admin Stats Content -->
+    <div class="content-box">
+        <h2 class="section-title">Admin Statistics</h2>
+        
+        <div class="charts-container">
+            <!-- Subject-wise Stats -->
+            <div class="chart-box">
+                <h3 class="chart-title">Subject-wise most quizzes</h3>
+                <div class="bar-chart">
+                    <div class="bar" style="height: 30%; background-color: #99ccff;">
+                        <span class="bar-label">Maths</span>
+                    </div>
+                    <div class="bar" style="height: 80%; background-color: #66cc66;">
+                        <span class="bar-label">Physics</span>
+                    </div>
+                    <div class="bar" style="height: 50%; background-color: #ff9999;">
+                        <span class="bar-label">Chemistry</span>
+                    </div>
+                    <div class="bar" style="height: 65%; background-color: #ffcc66;">
+                        <span class="bar-label">App Dev</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Month-wise Stats -->
+            <div class="chart-box">
+                <h3 class="chart-title">Month-wise most quizzes attempted</h3>
+                <div class="pie-chart-container">
+                    <div class="pie-chart">
+                        <div class="pie-segment" style="--segment-start: 0; --segment-end: 0.3; --segment-color: #ff9999;">
+                            <span class="segment-label">Q3</span>
+                        </div>
+                        <div class="pie-segment" style="--segment-start: 0.3; --segment-end: 0.5; --segment-color: #ffcc66;">
+                            <span class="segment-label">Q1</span>
+                        </div>
+                        <div class="pie-segment" style="--segment-start: 0.5; --segment-end: 0.8; --segment-color: #99ccff;">
+                            <span class="segment-label">Q2</span>
+                        </div>
+                        <div class="pie-segment" style="--segment-start: 0.8; --segment-end: 1; --segment-color: #66cc66;">
+                            <span class="segment-label">Q4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Statistics -->
+        <div class="stats-section">
+            <h3 class="section-title">User Statistics</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Total Users</td>
+                            <td>125</td>
+                            <td>+15 (30 days)</td>
+                        </tr>
+                        <tr>
+                            <td>Active Users</td>
+                            <td>87</td>
+                            <td>+8 (7 days)</td>
+                        </tr>
+                        <tr>
+                            <td>Quizzes Taken</td>
+                            <td>432</td>
+                            <td>+56 (30 days)</td>
+                        </tr>
+                        <tr>
+                            <td>Average Score</td>
+                            <td>72%</td>
+                            <td>+3% (30 days)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Quiz Statistics -->
+        <div class="stats-section">
+            <h3 class="section-title">Quiz Statistics</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Total Quizzes</th>
+                            <th>Total Questions</th>
+                            <th>Avg. Completion Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Physics</td>
+                            <td>15</td>
+                            <td>150</td>
+                            <td>85%</td>
+                        </tr>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>12</td>
+                            <td>120</td>
+                            <td>78%</td>
+                        </tr>
+                        <tr>
+                            <td>Chemistry</td>
+                            <td>10</td>
+                            <td>100</td>
+                            <td>82%</td>
+                        </tr>
+                        <tr>
+                            <td>App Development</td>
+                            <td>8</td>
+                            <td>80</td>
+                            <td>90%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="logo-container">
+            <div class="logo-icon">📚</div>
+        </div>
+        <h1 class="auth-title">Welcome to Quiz Master</h1>
+        <h2 class="auth-subtitle">Choose Your Role</h2>
+        
+        <div class="role-selection">
+            <a href="{{ url_for('admin_login') }}" class="role-btn admin-btn">
+                <div class="role-icon">👑</div>
+                <div class="role-name">Admin</div>
+                <div class="role-desc">Manage quizzes</div>
+            </a>
+            <a href="{{ url_for('user_choice') }}" class="role-btn user-btn">
+                <div class="role-icon">👤</div>
+                <div class="role-name">User</div>
+                <div class="role-desc">Take quizzes</div>
+            </a>
+        </div>
+        
+        <div class="app-info">
+            <p>Test your knowledge with our interactive quizzes!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

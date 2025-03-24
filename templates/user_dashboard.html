@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link active">Home</a>
+            <a href="{{ url_for('scores') }}" class="nav-link">Scores</a>
+            <a href="{{ url_for('summary') }}" class="nav-link">Summary</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <button class="search-btn">Search</button>
+        </div>
+        <div class="user-welcome">
+            Welcome user@quizmaster.com
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-box">
+        <!-- Subject Selection -->
+        <div class="selection-container">
+            <div class="selection-box">
+                <h2 class="selection-title">Choose a Subject</h2>
+                <div class="subject-grid">
+                    <div class="subject-card" onclick="showChapters('physics')">
+                        <div class="subject-icon">🔭</div>
+                        <div class="subject-name">Physics</div>
+                        <div class="subject-count">3 Chapters</div>
+                    </div>
+                    <div class="subject-card" onclick="showChapters('math')">
+                        <div class="subject-icon">📊</div>
+                        <div class="subject-name">Mathematics</div>
+                        <div class="subject-count">4 Chapters</div>
+                    </div>
+                    <div class="subject-card" onclick="showChapters('chemistry')">
+                        <div class="subject-icon">🧪</div>
+                        <div class="subject-name">Chemistry</div>
+                        <div class="subject-count">2 Chapters</div>
+                    </div>
+                    <div class="subject-card" onclick="showChapters('computer')">
+                        <div class="subject-icon">💻</div>
+                        <div class="subject-name">Computer Science</div>
+                        <div class="subject-count">5 Chapters</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter Selection (Initially Hidden) -->
+        <div class="selection-container chapter-container" id="physics-chapters" style="display: none;">
+            <div class="selection-box">
+                <h2 class="selection-title">Physics Chapters</h2>
+                <div class="chapter-grid">
+                    <div class="chapter-card" onclick="showQuizzes('physics-mechanics')">
+                        <div class="chapter-name">Mechanics</div>
+                        <div class="chapter-count">2 Quizzes</div>
+                    </div>
+                    <div class="chapter-card" onclick="showQuizzes('physics-electricity')">
+                        <div class="chapter-name">Electricity & Magnetism</div>
+                        <div class="chapter-count">3 Quizzes</div>
+                    </div>
+                    <div class="chapter-card" onclick="showQuizzes('physics-optics')">
+                        <div class="chapter-name">Optics</div>
+                        <div class="chapter-count">1 Quiz</div>
+                    </div>
+                </div>
+                <div class="back-button" onclick="hideChapters()">
+                    <span>← Back to Subjects</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Selection (Initially Hidden) -->
+        <div class="selection-container quiz-container" id="physics-mechanics-quizzes" style="display: none;">
+            <div class="selection-box">
+                <h2 class="selection-title">Mechanics Quizzes</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Quiz Questions</th>
+                                <th>Date</th>
+                                <th>Duration(Mins)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Newton's Laws</td>
+                                <td>xx/xx/yyyy</td>
+                                <td>00:10</td>
+                                <td class="action-buttons">
+                                    <a href="{{ url_for('view_quiz', quiz_id=1) }}" class="btn btn-view">View</a>
+                                    <a href="{{ url_for('take_quiz', quiz_id=1) }}" class="btn btn-start">Start</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Kinematics</td>
+                                <td>xx/xx/yyyy</td>
+                                <td>00:15</td>
+                                <td class="action-buttons">
+                                    <a href="{{ url_for('view_quiz', quiz_id=2) }}" class="btn btn-view">View</a>
+                                    <a href="{{ url_for('take_quiz', quiz_id=2) }}" class="btn btn-start">Start</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="back-button" onclick="hideQuizzes()">
+                    <span>← Back to Chapters</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show chapters for the selected subject
+    function showChapters(subject) {
+        // Hide all chapter containers
+        document.querySelectorAll('.chapter-container').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        // Show the selected subject's chapters
+        document.getElementById(subject + '-chapters').style.display = 'block';
+        
+        // Hide the subject selection and upcoming quizzes
+        document.querySelector('.selection-container').style.display = 'none';
+        document.querySelector('.upcoming-quizzes').style.display = 'none';
+    }
+    
+    // Hide chapters and show subjects
+    function hideChapters() {
+        // Hide all chapter containers
+        document.querySelectorAll('.chapter-container').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        // Show the subject selection and upcoming quizzes
+        document.querySelector('.selection-container').style.display = 'block';
+        document.querySelector('.upcoming-quizzes').style.display = 'block';
+    }
+    
+    // Show quizzes for the selected chapter
+    function showQuizzes(chapter) {
+        // Hide all quiz containers
+        document.querySelectorAll('.quiz-container').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        // Show the selected chapter's quizzes
+        document.getElementById(chapter + '-quizzes').style.display = 'block';
+        
+        // Hide the chapter containers
+        document.querySelectorAll('.chapter-container').forEach(container => {
+            container.style.display = 'none';
+        });
+    }
+    
+    // Hide quizzes and show chapters
+    function hideQuizzes() {
+        // Hide all quiz containers
+        document.querySelectorAll('.quiz-container').forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        // Show the physics chapters (as an example)
+        document.getElementById('physics-chapters').style.display = 'block';
+    }
+</script>
+{% endblock %} 

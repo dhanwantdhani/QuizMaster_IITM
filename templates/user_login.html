@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}User Login - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="logo-container">
+            <div class="logo-icon">🔑</div>
+        </div>
+        <h1 class="auth-title">Welcome to Quiz Master</h1>
+        <h2 class="auth-subtitle">User Login</h2>
+        
+        <form action="{{ url_for('user_login') }}" method="post">
+            <div class="form-group">
+                <label for="username">Username(E-mail) :</label>
+                <input type="email" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="{{ url_for('register') }}" class="link">Create new user?</a>
+            </div>
+        </form>
+        
+        <div class="app-info">
+            <p>Login to access your quizzes and track your progress.</p>
+        </div>
+        
+        <div class="back-link">
+            <a href="{{ url_for('user_choice') }}" class="link">← Back to user options</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

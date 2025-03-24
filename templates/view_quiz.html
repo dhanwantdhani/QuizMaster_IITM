@@ -1,0 +1,45 @@
+{% extends "common/base.html" %}
+
+{% block title %}View Quiz - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <h1 class="quiz-title">View the Quiz</h1>
+    
+    <div class="quiz-details">
+        <div class="detail-row">
+            <label>ID :</label>
+            <input type="text" value="xx" readonly>
+        </div>
+        
+        <div class="detail-row">
+            <label>Subject :</label>
+            <input type="text" value="Mathematics" readonly>
+        </div>
+        
+        <div class="detail-row">
+            <label>Chapter :</label>
+            <input type="text" value="Random Variables" readonly>
+        </div>
+        
+        <div class="detail-row">
+            <label>Number of Questions :</label>
+            <input type="text" value="05" readonly>
+        </div>
+        
+        <div class="detail-row">
+            <label>Scheduled Date :</label>
+            <input type="text" value="dd/mm/yyyy" readonly>
+        </div>
+        
+        <div class="detail-row">
+            <label>Duration(Mins) :</label>
+            <input type="text" value="00:10" readonly>
+        </div>
+    </div>
+    
+    <div class="quiz-actions">
+        <button class="btn btn-secondary" onclick="window.history.back()">Close</button>
+    </div>
+</div>
+{% endblock %} 

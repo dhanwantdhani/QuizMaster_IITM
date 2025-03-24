@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}User Options - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="logo-container">
+            <div class="logo-icon">👤</div>
+        </div>
+        <h1 class="auth-title">Welcome to Quiz Master</h1>
+        <h2 class="auth-subtitle">User Options</h2>
+        
+        <div class="role-selection">
+            <a href="{{ url_for('user_login') }}" class="role-btn login-btn">
+                <div class="role-icon">🔑</div>
+                <div class="role-name">Login</div>
+                <div class="role-desc">Existing account</div>
+            </a>
+            <a href="{{ url_for('register') }}" class="role-btn register-btn">
+                <div class="role-icon">📝</div>
+                <div class="role-name">Register</div>
+                <div class="role-desc">New account</div>
+            </a>
+        </div>
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}" class="link">← Back to role selection</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

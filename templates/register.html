@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Registration - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="logo-container">
+            <div class="logo-icon">📝</div>
+        </div>
+        <h1 class="auth-title">Welcome to Quiz Master</h1>
+        <h2 class="auth-subtitle">Registration</h2>
+        
+        <form action="{{ url_for('register') }}" method="post">
+            <div class="form-group">
+                <label for="username">User name(E-mail) :</label>
+                <input type="email" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fullname">Full name :</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="qualification">Qualification :</label>
+                <input type="text" id="qualification" name="qualification" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dob">Date of Birth :</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="{{ url_for('user_login') }}" class="link">Existing user?</a>
+            </div>
+        </form>
+        
+        <div class="app-info">
+            <p>Join our community and start testing your knowledge today!</p>
+        </div>
+        
+        <div class="back-link">
+            <a href="{{ url_for('user_choice') }}" class="link">← Back to user options</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

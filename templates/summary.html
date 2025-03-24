@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Summary - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('scores') }}" class="nav-link">Scores</a>
+            <a href="{{ url_for('summary') }}" class="nav-link active">Summary</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <button class="search-btn">Search</button>
+        </div>
+        <div class="user-welcome">
+            Welcome {{ session.get('username', 'User') }}
+        </div>
+    </div>
+
+    <!-- Summary Charts Section -->
+    <div class="content-box">
+        <h2 class="section-title">Summary Charts</h2>
+        <div class="charts-container">
+            <div class="chart-box">
+                <h3 class="chart-title">Subject wise most quizzes</h3>
+                <div class="bar-chart">
+                    <div class="bar" style="height: 30%; background-color: #99ccff;">
+                        <span class="bar-label">Maths</span>
+                    </div>
+                    <div class="bar" style="height: 80%; background-color: #66cc66;">
+                        <span class="bar-label">Physics</span>
+                    </div>
+                    <div class="bar" style="height: 50%; background-color: #ff9999;">
+                        <span class="bar-label">Chemistry</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-box">
+                <h3 class="chart-title">Month wise most quizzes attempted</h3>
+                <div class="pie-chart">
+                    <div class="pie-segment" style="--segment-start: 0; --segment-end: 0.3; --segment-color: #ff9999;">
+                        <span class="segment-label">Q3</span>
+                    </div>
+                    <div class="pie-segment" style="--segment-start: 0.3; --segment-end: 0.5; --segment-color: #ffcc66;">
+                        <span class="segment-label">Q1</span>
+                    </div>
+                    <div class="pie-segment" style="--segment-start: 0.5; --segment-end: 0.8; --segment-color: #99ccff;">
+                        <span class="segment-label">Q2</span>
+                    </div>
+                    <div class="pie-segment" style="--segment-start: 0.8; --segment-end: 1; --segment-color: #66cc66;">
+                        <span class="segment-label">Q4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

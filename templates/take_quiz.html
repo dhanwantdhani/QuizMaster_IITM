@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Take Quiz - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1 class="quiz-title">Start the Quiz</h1>
+        <div class="quiz-info">
+            <div class="question-counter">Q.No: <span>3/15</span></div>
+            <div class="timer">00:13:52</div>
+        </div>
+    </div>
+    
+    <div class="question-box">
+        <p class="question-text">......Question Statement......</p>
+        
+        <div class="options-list">
+            <div class="option">
+                <input type="radio" id="option1" name="answer">
+                <label for="option1">1) Option...</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option2" name="answer">
+                <label for="option2">2) Option...</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option3" name="answer" checked>
+                <label for="option3">3) Option...</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option4" name="answer">
+                <label for="option4">4) Option...</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="quiz-actions">
+        <button class="btn btn-primary">Save and Next</button>
+        <button class="btn btn-success">Submit</button>
+    </div>
+</div>
+{% endblock %} 

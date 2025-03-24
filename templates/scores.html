@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Scores - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('scores') }}" class="nav-link active">Scores</a>
+            <a href="{{ url_for('summary') }}" class="nav-link">Summary</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <button class="search-btn">Search</button>
+        </div>
+        <div class="user-welcome">
+            Welcome {{ session.get('username', 'User') }}
+        </div>
+    </div>
+
+    <!-- Quiz Scores Section -->
+    <div class="content-box">
+        <h2 class="section-title">Quiz Scores</h2>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Quiz Questions</th>
+                        <th>Date</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>OS</td>
+                        <td>xx/xx/yyyy</td>
+                        <td>3/8</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>IP</td>
+                        <td>xx/xx/yyyy</td>
+                        <td>12/15</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

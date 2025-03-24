@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Quiz Master{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">Home</a>
+            <a href="{{ url_for('admin_stats') }}" class="nav-link">Stats</a>
+            <a href="{{ url_for('admin_summary') }}" class="nav-link">Summary</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <button class="search-btn">Search</button>
+        </div>
+        <div class="user-welcome">
+            Welcome Admin
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Content -->
+    <div class="content-box">
+        <div class="admin-dashboard-grid">
+            <!-- Subject Sections -->
+            <div class="subject-section">
+                <h2 class="section-title">Physics</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Chapter name</th>
+                                <th># quizzes</th>
+                                <th>Date/Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Force</td>
+                                <td>1 quizzes</td>
+                                <td>xx/xx/xxxx</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-view">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EMF</td>
+                                <td>3 quizzes</td>
+                                <td>xx/xx/xxxx</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-view">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <a href="{{ url_for('add_chapter') }}" class="btn btn-add">+ Chapter</a>
+                </div>
+            </div>
+
+            <!-- App Data Section -->
+            <div class="subject-section">
+                <h2 class="section-title">App Data</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Chapter name</th>
+                                <th># quizzes</th>
+                                <th>Date/Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HTML</td>
+                                <td>1 quizzes</td>
+                                <td>xx/xx/xxxx</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-view">View</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CSS</td>
+                                <td>2 quizzes</td>
+                                <td>xx/xx/xxxx</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-view">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <a href="{{ url_for('add_chapter') }}" class="btn btn-add">+ Chapter</a>
+                </div>
+            </div>
+
+            <!-- All Subjects Link -->
+            <div class="all-subjects">
+                <p>All subjects here ...</p>
+                <a href="{{ url_for('add_subject') }}" class="btn-circle">+</a>
+            </div>
+
+            <!-- Quiz Management Section -->
+            <div class="quiz-management">
+                <h2 class="section-title">Quiz Management</h2>
+                
+                <div class="quiz-grid">
+                    <!-- Quiz OS Section -->
+                    <div class="quiz-section">
+                        <h3 class="quiz-title">Quiz (OS)</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Status</th>
+                                        <th>Date/Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>5 Ques</td>
+                                        <td>xx/xx/xxxx</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>10 Ques</td>
+                                        <td>xx/xx/xxxx</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-actions">
+                            <a href="#" class="btn btn-edit">+ Question</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Quiz HTML Section -->
+                    <div class="quiz-section">
+                        <h3 class="quiz-title">Quiz (HTML)</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Status</th>
+                                        <th>Date/Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>10 Ques</td>
+                                        <td>xx/xx/xxxx</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>15 Ques</td>
+                                        <td>xx/xx/xxxx</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-actions">
+                            <a href="#" class="btn btn-edit">+ Question</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="all-quizzes">
+                    <p>All quizzes here ...</p>
+                    <a href="{{ url_for('add_quiz') }}" class="btn btn-add-quiz">+ New Quiz</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="search-hint">
+            <p>Searching subjects/quizzes/etc</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div class="modal" id="addSubjectModal">
+    <div class="modal-content">
+        <h2>New Subject</h2>
+        
+        <div class="form-group">
+            <label for="subject-name">Name:</label>
+            <input type="text" id="subject-name" name="subject-name">
+        </div>
+        
+        <div class="form-group">
+            <label for="subject-description">Description:</label>
+            <textarea id="subject-description" name="subject-description"></textarea>
+        </div>
+        
+        <div class="form-note">
+            <p>Fields may include more input fields...</p>
+        </div>
+        
+        <div class="form-actions">
+            <button class="btn btn-save">Save</button>
+            <button class="btn btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Chapter Modal -->
+<div class="modal" id="addChapterModal">
+    <div class="modal-content">
+        <h2>New Chapter</h2>
+        
+        <div class="form-group">
+            <label for="chapter-name">Name:</label>
+            <input type="text" id="chapter-name" name="chapter-name">
+        </div>
+        
+        <div class="form-group">
+            <label for="chapter-description">Description:</label>
+            <textarea id="chapter-description" name="chapter-description"></textarea>
+        </div>
+        
+        <div class="form-note">
+            <p>Fields may include more input fields...</p>
+        </div>
+        
+        <div class="form-actions">
+            <button class="btn btn-save">Save</button>
+            <button class="btn btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal" id="addQuestionModal">
+    <div class="modal-content">
+        <h2>New Question</h2>
+        
+        <div class="form-group">
+            <label for="chapter-id">Chapter ID:</label>
+            <input type="text" id="chapter-id" name="chapter-id">
+        </div>
+        
+        <div class="form-group">
+            <label for="question-title">Question Title:</label>
+            <input type="text" id="question-title" name="question-title">
+        </div>
+        
+        <div class="form-group">
+            <label for="question-statement">Question Statement:</label>
+            <textarea id="question-statement" name="question-statement"></textarea>
+        </div>
+        
+        <div class="options-section">
+            <h3>Single Option Correct</h3>
+            
+            <div class="form-group">
+                <label for="option1">Option 1):</label>
+                <input type="text" id="option1" name="option1">
+            </div>
+            
+            <div class="form-group">
+                <label for="option2">Option 2):</label>
+                <input type="text" id="option2" name="option2">
+            </div>
+            
+            <div class="form-group">
+                <label for="option3">Option 3):</label>
+                <input type="text" id="option3" name="option3">
+            </div>
+            
+            <div class="form-group">
+                <label for="option4">Option 4):</label>
+                <input type="text" id="option4" name="option4">
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-option">Correct option:</label>
+                <select id="correct-option" name="correct-option">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button class="btn btn-save">Save and Add</button>
+            <button class="btn btn-finish">Finish</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Quiz Modal -->
+<div class="modal" id="addQuizModal">
+    <div class="modal-content">
+        <h2>New Quiz</h2>
+        
+        <div class="form-group">
+            <label for="quiz-chapter-id">Chapter ID:</label>
+            <input type="text" id="quiz-chapter-id" name="quiz-chapter-id">
+        </div>
+        
+        <div class="form-group">
+            <label for="quiz-title">Title:</label>
+            <input type="text" id="quiz-title" name="quiz-title">
+        </div>
+        
+        <div class="form-group">
+            <label for="quiz-duration">Duration:</label>
+            <input type="text" id="quiz-duration" name="quiz-duration" placeholder="minutes">
+        </div>
+        
+        <div class="form-note">
+            <p>Fields may include more input fields...</p>
+        </div>
+        
+        <div class="form-actions">
+            <button class="btn btn-save">Save</button>
+            <button class="btn btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+{% endblock %} 
