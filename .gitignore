@@ -1,24 +1,2 @@
-# Python bytecode
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Environment
+# Environment variables
 .env
-.venv
-env/
-venv/
-ENV/
-
-# Flask instance folder
-instance/
-
-# Database files
-*.db
-*.sqlite3
-
-# Logs
-*.log
-
-# OS specific files
-.DS_Store

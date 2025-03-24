@@ -31,76 +31,52 @@
             <!-- Subject Sections -->
             <div class="subject-section">
                 <h2 class="section-title">Physics</h2>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Chapter name</th>
-                                <th># quizzes</th>
-                                <th>Date/Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Force</td>
-                                <td>1 quizzes</td>
-                                <td>xx/xx/xxxx</td>
-                                <td class="action-buttons">
-                                    <a href="#" class="btn btn-view">View</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>EMF</td>
-                                <td>3 quizzes</td>
-                                <td>xx/xx/xxxx</td>
-                                <td class="action-buttons">
-                                    <a href="#" class="btn btn-view">View</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <a href="{{ url_for('add_chapter') }}" class="btn btn-add">+ Chapter</a>
+                <div class="subjects-section">
+                    <h3>Subjects</h3>
+                    {% if subjects %}
+                        {% for subject in subjects %}
+                        <div class="subject-row">
+                            <div class="subject-name">{{ subject.name }}</div>
+                            <div class="quiz-count">{{ subject.chapters|sum(attribute='quizzes'|length) }} quizzes</div>
+                            <div class="date">xx/xx/xxxx</div>
+                            <div class="actions">
+                                <a href="{{ url_for('view_subject', subject_id=subject.id) }}" class="view-btn">View</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No subjects available. Add your first subject below.</p>
+                    {% endif %}
+                    
+                    <div class="action-buttons">
+                        <a href="{{ url_for('add_subject_form') }}" class="btn">+ Add Subject</a>
+                    </div>
                 </div>
             </div>
 
             <!-- App Data Section -->
             <div class="subject-section">
                 <h2 class="section-title">App Data</h2>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Chapter name</th>
-                                <th># quizzes</th>
-                                <th>Date/Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>HTML</td>
-                                <td>1 quizzes</td>
-                                <td>xx/xx/xxxx</td>
-                                <td class="action-buttons">
-                                    <a href="#" class="btn btn-view">View</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>CSS</td>
-                                <td>2 quizzes</td>
-                                <td>xx/xx/xxxx</td>
-                                <td class="action-buttons">
-                                    <a href="#" class="btn btn-view">View</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <a href="{{ url_for('add_chapter') }}" class="btn btn-add">+ Chapter</a>
+                <div class="subjects-section">
+                    <h3>Subjects</h3>
+                    {% if subjects %}
+                        {% for subject in subjects %}
+                        <div class="subject-row">
+                            <div class="subject-name">{{ subject.name }}</div>
+                            <div class="quiz-count">{{ subject.chapters|sum(attribute='quizzes'|length) }} quizzes</div>
+                            <div class="date">xx/xx/xxxx</div>
+                            <div class="actions">
+                                <a href="{{ url_for('view_subject', subject_id=subject.id) }}" class="view-btn">View</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No subjects available. Add your first subject below.</p>
+                    {% endif %}
+                    
+                    <div class="action-buttons">
+                        <a href="{{ url_for('add_subject_form') }}" class="btn">+ Add Subject</a>
+                    </div>
                 </div>
             </div>
 
