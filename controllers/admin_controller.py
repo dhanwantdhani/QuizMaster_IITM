@@ -1,7 +1,9 @@
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from app_factory import app, db
 from controllers.decorators import admin_required
 from models.quiz import Subject, Chapter, Quiz
+from models import Subject
+from models import db  # or you could import from your app.py if db is defined there
 
 # Admin login
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -17,9 +19,12 @@ def admin_login():
 @app.route('/admin/dashboard')
 @admin_required
 def admin_dashboard():
-    # Get all subjects with their associated chapters and quizzes
     subjects = Subject.query.all()
-    return render_template('admin_dashboard.html', subjects=subjects)
+    # Get all quizzes without filtering by type since we don't have that field
+    quizzes = Quiz.query.all()
+    return render_template('admin_dashboard.html', 
+                         subjects=subjects,
+                         quizzes=quizzes)
 
 # Admin stats
 @app.route('/admin/stats')
@@ -40,21 +45,18 @@ def add_subject_form():
 @app.route('/admin/subject/add', methods=['POST'])
 @admin_required
 def add_subject():
-    name = request.form.get('name')
-    description = request.form.get('description')
-    
-    # Validate input
-    if not name:
-        flash('Subject name is required', 'error')
-        return redirect(url_for('add_subject_form'))
-    
-    # Create new subject
-    new_subject = Subject(name=name, description=description)
-    db.session.add(new_subject)
-    db.session.commit()
-    
-    flash('Subject added successfully', 'success')
-    return redirect(url_for('admin_dashboard'))
+    try:
+        data = request.json
+        new_subject = Subject(
+            name=data['name'],
+            description=data.get('description', '')  # Optional description
+        )
+        db.session.add(new_subject)
+        db.session.commit()
+        return jsonify({'success': True, 'id': new_subject.id})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
 
 # Add chapter
 @app.route('/admin/chapter/add', methods=['GET'])
@@ -86,4 +88,27 @@ def add_chapter():
     db.session.commit()
     
     flash('Chapter added successfully', 'success')
-    return redirect(url_for('admin_dashboard')) 
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/subject/<int:subject_id>')
+@admin_required
+def view_subject(subject_id):
+    subject = Subject.query.get_or_404(subject_id)
+    return render_template('view_subject.html', subject=subject)
+
+@app.route('/admin/subject/<int:subject_id>/delete', methods=['DELETE'])
+@admin_required
+def delete_subject(subject_id):
+    try:
+        subject = Subject.query.get_or_404(subject_id)
+        db.session.delete(subject)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.clear()
+    return redirect(url_for('user_login')) 

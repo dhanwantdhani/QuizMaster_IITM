@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ subject.name }}</h2>
+    
+    <!-- Display subject details -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Chapters</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Chapter Name</th>
+                            <th>Number of Quizzes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chapter in subject.chapters %}
+                        <tr>
+                            <td>{{ chapter.name }}</td>
+                            <td>{{ chapter.quizzes|length }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Edit</button>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary">Add Chapter</button>
+        </div>
+    </div>
+    
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %} 
