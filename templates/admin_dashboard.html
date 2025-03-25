@@ -7,307 +7,384 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .dashboard-header {
+        background-color: #fff;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .logout-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: opacity 0.3s;
+    }
+
+    .logout-btn:hover {
+        opacity: 0.9;
+        color: white;
+        text-decoration: none;
+    }
+
+    .dashboard-container {
+        padding: 0 2rem 2rem 2rem;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        margin-bottom: 2rem;
+        border: none;
+    }
+
+    .section-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e6e6e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .table {
+        margin: 0;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-top: none;
+        color: #606266;
+        font-weight: 500;
+        padding: 1rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+        padding: 1rem;
+        color: #2c3e50;
+    }
+
+    .btn-add {
+        background-color: #67c23a;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+    }
+
+    .btn-edit {
+        background-color: #409eff;
+        color: white;
+        border: none;
+    }
+
+    .btn-delete {
+        background-color: #f56c6c;
+        color: white;
+        border: none;
+    }
+
+    .btn {
+        margin: 0 0.2rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        transition: opacity 0.3s;
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+        color: white;
+    }
+
+    .table-header {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    .table-column {
+        padding: 0.5rem;
+        text-align: left;
+        font-weight: bold;
+    }
+</style>
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-user-shield"></i> Admin Dashboard
+    </h1>
+    <a href="{{ url_for('admin_logout') }}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+            </div>
+
 <div class="dashboard-container">
-    <!-- Navigation Bar -->
-    <div class="nav-bar">
-        <div class="nav-links">
-            <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">Home</a>
-            <a href="{{ url_for('admin_stats') }}" class="nav-link">Stats</a>
-            <a href="{{ url_for('admin_summary') }}" class="nav-link">Summary</a>
-            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
-        </div>
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
-            <button class="search-btn">Search</button>
-        </div>
-        <div class="user-welcome">
-            Welcome Admin
-        </div>
-    </div>
-
-    <!-- Admin Dashboard Content -->
-    <div class="content-box">
-        <div class="admin-dashboard-grid">
-            <!-- Subject Sections -->
-            <div class="subject-section">
-                <h2 class="section-title">Physics</h2>
-                <div class="subjects-section">
-                    <h3>Subjects</h3>
-                    {% if subjects %}
-                        {% for subject in subjects %}
-                        <div class="subject-row">
-                            <div class="subject-name">{{ subject.name }}</div>
-                            <div class="quiz-count">{{ subject.chapters|sum(attribute='quizzes'|length) }} quizzes</div>
-                            <div class="date">xx/xx/xxxx</div>
-                            <div class="actions">
-                                <a href="{{ url_for('view_subject', subject_id=subject.id) }}" class="view-btn">View</a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No subjects available. Add your first subject below.</p>
-                    {% endif %}
-                    
-                    <div class="action-buttons">
-                        <a href="{{ url_for('add_subject_form') }}" class="btn">+ Add Subject</a>
-                    </div>
-                </div>
+    <!-- Subject Management Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <h3 class="section-title">Subject Management</h3>
+            <button class="btn btn-add" onclick="addSubject()">
+                <i class="fas fa-plus"></i> Add Subject
+            </button>
             </div>
-
-            <!-- App Data Section -->
-            <div class="subject-section">
-                <h2 class="section-title">App Data</h2>
-                <div class="subjects-section">
-                    <h3>Subjects</h3>
-                    {% if subjects %}
-                        {% for subject in subjects %}
-                        <div class="subject-row">
-                            <div class="subject-name">{{ subject.name }}</div>
-                            <div class="quiz-count">{{ subject.chapters|sum(attribute='quizzes'|length) }} quizzes</div>
-                            <div class="date">xx/xx/xxxx</div>
-                            <div class="actions">
-                                <a href="{{ url_for('view_subject', subject_id=subject.id) }}" class="view-btn">View</a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No subjects available. Add your first subject below.</p>
-                    {% endif %}
-                    
-                    <div class="action-buttons">
-                        <a href="{{ url_for('add_subject_form') }}" class="btn">+ Add Subject</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- All Subjects Link -->
-            <div class="all-subjects">
-                <p>All subjects here ...</p>
-                <a href="{{ url_for('add_subject') }}" class="btn-circle">+</a>
-            </div>
-
-            <!-- Quiz Management Section -->
-            <div class="quiz-management">
-                <h2 class="section-title">Quiz Management</h2>
-                
-                <div class="quiz-grid">
-                    <!-- Quiz OS Section -->
-                    <div class="quiz-section">
-                        <h3 class="quiz-title">Quiz (OS)</h3>
-                        <div class="table-container">
-                            <table class="data-table">
+        <div class="card-body">
+            {% if subjects %}
+            <div class="table-responsive">
+                <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Status</th>
-                                        <th>Date/Status</th>
+                            <th style="width: 40%">Subject Name</th>
+                            <th style="width: 20%">Total Chapters</th>
+                            <th style="width: 40%">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>5 Ques</td>
-                                        <td>xx/xx/xxxx</td>
+                        {% for subject in subjects %}
+                        <tr>
+                            <td>{{ subject.name }}</td>
+                            <td>{{ subject.chapters|length }}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editSubject({{ subject.id }})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteSubject({{ subject.id }})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                <button class="btn btn-add" onclick="addChapter({{ subject.id }})">
+                                    <i class="fas fa-plus"></i> Add Chapter
+                                </button>
+                            </td>
                                     </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>10 Ques</td>
-                                        <td>xx/xx/xxxx</td>
-                                    </tr>
+                        {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-actions">
-                            <a href="#" class="btn btn-edit">+ Question</a>
+            {% else %}
+            <div class="text-center py-4">
+                <p class="text-muted">No subjects available. Click "Add Subject" to create your first subject.</p>
+            </div>
+            {% endif %}
                         </div>
                     </div>
                     
-                    <!-- Quiz HTML Section -->
-                    <div class="quiz-section">
-                        <h3 class="quiz-title">Quiz (HTML)</h3>
-                        <div class="table-container">
-                            <table class="data-table">
+    <!-- Quiz Management Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <h3 class="section-title">Quiz Management</h3>
+            <button class="btn btn-add" onclick="addQuiz()">
+                <i class="fas fa-plus"></i> Add Quiz
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                            <th>Chapter</th>
                                         <th>Status</th>
-                                        <th>Date/Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>10 Ques</td>
-                                        <td>xx/xx/xxxx</td>
+                        {% for quiz in quizzes %}
+                        <tr>
+                            <td>{{ quiz.id }}</td>
+                            <td>{{ quiz.chapter.name }}</td>
+                            <td>{{ quiz.status }}</td>
+                            <td>{{ quiz.date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editQuiz({{ quiz.id }})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteQuiz({{ quiz.id }})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
                                     </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>15 Ques</td>
-                                        <td>xx/xx/xxxx</td>
-                                    </tr>
+                        {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-actions">
-                            <a href="#" class="btn btn-edit">+ Question</a>
                         </div>
                     </div>
                 </div>
                 
-                <div class="all-quizzes">
-                    <p>All quizzes here ...</p>
-                    <a href="{{ url_for('add_quiz') }}" class="btn btn-add-quiz">+ New Quiz</a>
+<!-- Subject Modal -->
+<div class="modal fade" id="subjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subjectModalLabel">Add/Edit Subject</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
+            <div class="modal-body">
+                <form id="subjectForm">
+                    <div class="form-group">
+                        <label>Subject Name</label>
+                        <input type="text" class="form-control" id="subjectName" required>
             </div>
+                </form>
         </div>
-        
-        <div class="search-hint">
-            <p>Searching subjects/quizzes/etc</p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveSubject()">Save</button>
         </div>
     </div>
 </div>
+        </div>
+        
+<!-- Add this modal for adding subjects -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Subject</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+            <div class="modal-body">
+                <form id="addSubjectForm">
+        <div class="form-group">
+                        <label for="subjectName">Subject Name</label>
+                        <input type="text" class="form-control" id="subjectName" required>
+        </div>
+        <div class="form-group">
+                        <label for="subjectDescription">Description (Optional)</label>
+                        <textarea class="form-control" id="subjectDescription"></textarea>
+        </div>
+                </form>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitAddSubject()">Add Subject</button>
+        </div>
+    </div>
+</div>
+        </div>
+        
+<script>
+    // Subject Management Functions
+    function addSubject() {
+        $('#addSubjectModal').modal('show');
+    }
 
-<!-- Add Subject Modal -->
-<div class="modal" id="addSubjectModal">
-    <div class="modal-content">
-        <h2>New Subject</h2>
-        
-        <div class="form-group">
-            <label for="subject-name">Name:</label>
-            <input type="text" id="subject-name" name="subject-name">
-        </div>
-        
-        <div class="form-group">
-            <label for="subject-description">Description:</label>
-            <textarea id="subject-description" name="subject-description"></textarea>
-        </div>
-        
-        <div class="form-note">
-            <p>Fields may include more input fields...</p>
-        </div>
-        
-        <div class="form-actions">
-            <button class="btn btn-save">Save</button>
-            <button class="btn btn-cancel">Cancel</button>
-        </div>
-    </div>
-</div>
+    function editSubject(id) {
+        // Fetch subject data and populate form
+        $('#subjectModal').modal('show');
+    }
 
-<!-- Add Chapter Modal -->
-<div class="modal" id="addChapterModal">
-    <div class="modal-content">
-        <h2>New Chapter</h2>
-        
-        <div class="form-group">
-            <label for="chapter-name">Name:</label>
-            <input type="text" id="chapter-name" name="chapter-name">
-        </div>
-        
-        <div class="form-group">
-            <label for="chapter-description">Description:</label>
-            <textarea id="chapter-description" name="chapter-description"></textarea>
-        </div>
-        
-        <div class="form-note">
-            <p>Fields may include more input fields...</p>
-        </div>
-        
-        <div class="form-actions">
-            <button class="btn btn-save">Save</button>
-            <button class="btn btn-cancel">Cancel</button>
-        </div>
-    </div>
-</div>
+    function deleteSubject(id) {
+        if (confirm('Are you sure you want to delete this subject? This cannot be undone.')) {
+            fetch(`/admin/subject/${id}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();  // Reload page to update UI
+                } else {
+                    alert('Error deleting subject: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting subject. Please try again.');
+            });
+        }
+    }
 
-<!-- Add Question Modal -->
-<div class="modal" id="addQuestionModal">
-    <div class="modal-content">
-        <h2>New Question</h2>
-        
-        <div class="form-group">
-            <label for="chapter-id">Chapter ID:</label>
-            <input type="text" id="chapter-id" name="chapter-id">
-        </div>
-        
-        <div class="form-group">
-            <label for="question-title">Question Title:</label>
-            <input type="text" id="question-title" name="question-title">
-        </div>
-        
-        <div class="form-group">
-            <label for="question-statement">Question Statement:</label>
-            <textarea id="question-statement" name="question-statement"></textarea>
-        </div>
-        
-        <div class="options-section">
-            <h3>Single Option Correct</h3>
-            
-            <div class="form-group">
-                <label for="option1">Option 1):</label>
-                <input type="text" id="option1" name="option1">
-            </div>
-            
-            <div class="form-group">
-                <label for="option2">Option 2):</label>
-                <input type="text" id="option2" name="option2">
-            </div>
-            
-            <div class="form-group">
-                <label for="option3">Option 3):</label>
-                <input type="text" id="option3" name="option3">
-            </div>
-            
-            <div class="form-group">
-                <label for="option4">Option 4):</label>
-                <input type="text" id="option4" name="option4">
-            </div>
-            
-            <div class="form-group">
-                <label for="correct-option">Correct option:</label>
-                <select id="correct-option" name="correct-option">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="form-actions">
-            <button class="btn btn-save">Save and Add</button>
-            <button class="btn btn-finish">Finish</button>
-        </div>
-    </div>
-</div>
+    function viewSubject(id) {
+        window.location.href = `/admin/subject/${id}`;
+    }
 
-<!-- Add Quiz Modal -->
-<div class="modal" id="addQuizModal">
-    <div class="modal-content">
-        <h2>New Quiz</h2>
-        
-        <div class="form-group">
-            <label for="quiz-chapter-id">Chapter ID:</label>
-            <input type="text" id="quiz-chapter-id" name="quiz-chapter-id">
-        </div>
-        
-        <div class="form-group">
-            <label for="quiz-title">Title:</label>
-            <input type="text" id="quiz-title" name="quiz-title">
-        </div>
-        
-        <div class="form-group">
-            <label for="quiz-duration">Duration:</label>
-            <input type="text" id="quiz-duration" name="quiz-duration" placeholder="minutes">
-        </div>
-        
-        <div class="form-note">
-            <p>Fields may include more input fields...</p>
-        </div>
-        
-        <div class="form-actions">
-            <button class="btn btn-save">Save</button>
-            <button class="btn btn-cancel">Cancel</button>
-        </div>
-    </div>
-</div>
+    function addChapter(subjectId) {
+        window.location.href = `/admin/subject/${subjectId}/add-chapter`;
+    }
+
+    // Quiz Management Functions
+    function addQuiz() {
+        window.location.href = '/admin/quiz/add';
+    }
+
+    function editQuiz(id) {
+        window.location.href = `/admin/quiz/${id}/edit`;
+    }
+
+    function viewQuiz(id) {
+        window.location.href = `/admin/quiz/${id}`;
+    }
+
+    function deleteQuiz(id) {
+        if(confirm('Are you sure you want to delete this quiz?')) {
+            fetch(`/admin/quiz/${id}/delete`, {
+                method: 'DELETE',
+            }).then(response => {
+                if(response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    // Function to submit new subject
+    function submitAddSubject() {
+        const name = document.getElementById('subjectName').value;
+        const description = document.getElementById('subjectDescription').value;
+
+        if (!name) {
+            alert('Subject name is required!');
+            return;
+        }
+
+        fetch('/admin/subject/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                description: description
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();  // Reload page to show new subject
+            } else {
+                alert('Error adding subject: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding subject. Please try again.');
+        });
+    }
+</script>
 {% endblock %} 
