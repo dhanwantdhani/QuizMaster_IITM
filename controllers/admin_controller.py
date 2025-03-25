@@ -2,8 +2,9 @@ from flask import render_template, request, redirect, url_for, flash, session, j
 from app_factory import app, db
 from controllers.decorators import admin_required
 from models.quiz import Subject, Chapter, Quiz
-from models import Subject
-from models import db  # or you could import from your app.py if db is defined there
+# Remove duplicate import lines to avoid conflicts
+# from models import Subject
+# from models import db
 
 # Admin login
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -40,23 +41,56 @@ def admin_summary(): return render_template('admin_summary.html')
 @app.route('/admin/subject/add', methods=['GET'])
 @admin_required
 def add_subject_form():
+    # Clear any existing flash messages when displaying the form
+    session.pop('_flashes', None)
     return render_template('add_subject.html')
 
 @app.route('/admin/subject/add', methods=['POST'])
 @admin_required
 def add_subject():
     try:
-        data = request.json
-        new_subject = Subject(
-            name=data['name'],
-            description=data.get('description', '')  # Optional description
-        )
-        db.session.add(new_subject)
-        db.session.commit()
-        return jsonify({'success': True, 'id': new_subject.id})
+        # Get data from form submission
+        name = request.form.get('name')
+        description = request.form.get('description', '')
+        
+        print(f"Received form data - Name: {name}, Description: {description}")
+        
+        # Validate
+        if not name:
+            flash('Subject name is required', 'error')
+            return redirect(url_for('add_subject_form'))
+        
+        # Create new subject with manual debugging
+        try:
+            new_subject = Subject(
+                name=name,
+                description=description
+            )
+            print(f"Subject object created: {new_subject}")
+        except Exception as e:
+            print(f"Error creating subject object: {str(e)}")
+            raise e
+        
+        # Try adding to session with more granular error handling
+        try:
+            db.session.add(new_subject)
+            print("Subject added to session")
+            db.session.flush()
+            print("Session flushed successfully")
+            db.session.commit()
+            print(f"Subject committed with ID: {new_subject.id}")
+        except Exception as e:
+            print(f"Database error: {str(e)}")
+            raise e
+            
+        flash('Subject added successfully', 'success')
+        print("Redirecting to admin dashboard")
+        return redirect(url_for('admin_dashboard'))
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'message': str(e)}), 400
+        print(f"Error in add_subject: {str(e)}")
+        flash(f'Error adding subject: {str(e)}', 'error')
+        return redirect(url_for('add_subject_form'))
 
 # Add chapter
 @app.route('/admin/chapter/add', methods=['GET'])
