@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Add Subject - Quiz Master{% endblock %}
+{% block title %}Add Chapter - Quiz Master{% endblock %}
 
 {% block content %}
 <style>
@@ -23,6 +23,23 @@
         margin-bottom: 2rem;
         padding-bottom: 1rem;
         border-bottom: 2px solid #eee;
+    }
+    
+    .subject-name {
+        color: #409eff;
+        font-weight: 500;
+    }
+    
+    .success-message {
+        background-color: #f0f9eb;
+        color: #67c23a;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid #c2e7b0;
     }
     
     .form-group {
@@ -58,7 +75,6 @@
         margin-top: 2rem;
         padding-top: 1rem;
         border-top: 2px solid #eee;
-        justify-content: space-between;
     }
     
     .btn {
@@ -95,52 +111,35 @@
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    
-    .alert {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-    }
-    
-    .alert-success {
-        background-color: #f0f9eb;
-        color: #67c23a;
-        border: 1px solid #c2e7b0;
-    }
-    
-    .alert-error {
-        background-color: #fef0f0;
-        color: #f56c6c;
-        border: 1px solid #fbc4c4;
-    }
 </style>
 
 <div class="container">
     <div class="form-card">
-        <h2 class="page-title">Add New Subject</h2>
+        <h2 class="page-title">Add Chapter to <span class="subject-name">{{ subject.name }}</span></h2>
         
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        {% if 'Chapter updated successfully' in get_flashed_messages() %}
+        <div class="success-message">
+            <i class="fas fa-check-circle"></i>
+            Chapter updated successfully
+        </div>
+        {% endif %}
         
-        <form action="{{ url_for('add_subject') }}" method="post">
+        <form action="{{ url_for('add_chapter', subject_id=subject.id) }}" method="post">
             <div class="form-group">
-                <label class="form-label" for="name">Subject Name:</label>
-                <input type="text" class="form-control" id="name" name="name" required
-                       placeholder="Enter subject name">
+                <label class="form-label" for="name">Chapter Name:</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="name" 
+                       name="name" 
+                       required 
+                       placeholder="Enter chapter name">
             </div>
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save Subject
+                    <i class="fas fa-plus"></i> Add Chapter
                 </button>
-                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                <a href="{{ url_for('chapter_settings', subject_id=subject.id) }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                 </a>
             </div>

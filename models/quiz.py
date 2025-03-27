@@ -6,17 +6,19 @@ class Subject(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     
-    # Define relationship with chapters
-    chapters = db.relationship('Chapter', backref='subject', lazy=True)
+    # Define relationship with chapters with cascade delete
+    chapters = db.relationship('Chapter', backref='subject', lazy=True,
+                             cascade='all, delete-orphan')
 
 class Chapter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete='CASCADE'), nullable=False)
     
-    # Define relationship with quizzes
-    quizzes = db.relationship('Quiz', backref='chapter', lazy=True)
+    # Define relationship with quizzes with cascade delete
+    quizzes = db.relationship('Quiz', backref='chapter', lazy=True,
+                            cascade='all, delete-orphan')
 
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,11 +26,13 @@ class Quiz(db.Model):
     description = db.Column(db.Text)
     duration = db.Column(db.Integer)  # in minutes
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
+    chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id', ondelete='CASCADE'), nullable=False)
     
-    # Define relationships
-    questions = db.relationship('Question', backref='quiz', lazy=True)
-    scores = db.relationship('Score', backref='quiz', lazy=True)
+    # Define relationships with cascade delete
+    questions = db.relationship('Question', backref='quiz', lazy=True,
+                              cascade='all, delete-orphan')
+    scores = db.relationship('Score', backref='quiz', lazy=True,
+                           cascade='all, delete-orphan')
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
