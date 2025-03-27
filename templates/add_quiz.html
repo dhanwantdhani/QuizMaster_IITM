@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Add Quiz - Quiz Master{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #409eff;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #909399;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 1rem;
+    }
+</style>
+
+<div class="container">
+    <h2>Add New Quiz</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form id="quizForm">
+        <div class="form-group">
+            <label for="subject">Select Subject:</label>
+            <select class="form-control" id="subject" name="subject_id" required onchange="loadChapters()">
+                <option value="">Choose a subject...</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="chapter">Select Chapter:</label>
+            <select class="form-control" id="chapter" name="chapter_id" required>
+                <option value="">First select a subject...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="title">Quiz Title:</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="quiz_date">Quiz Date:</label>
+            <input type="date" class="form-control" id="quiz_date" name="quiz_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="quiz_time">Quiz Time:</label>
+            <input type="time" class="form-control" id="quiz_time" name="quiz_time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Duration (HH:MM):</label>
+            <input type="time" class="form-control" id="duration" name="duration" required>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Quiz</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function loadChapters() {
+    const subjectId = document.getElementById('subject').value;
+    const chapterSelect = document.getElementById('chapter');
+    
+    // Clear existing options
+    chapterSelect.innerHTML = '<option value="">Loading chapters...</option>';
+    
+    if (subjectId) {
+        fetch(`/api/subjects/${subjectId}/chapters`)
+            .then(response => response.json())
+            .then(chapters => {
+                chapterSelect.innerHTML = '<option value="">Select a chapter...</option>';
+                chapters.forEach(chapter => {
+                    const option = document.createElement('option');
+                    option.value = chapter.id;
+                    option.textContent = chapter.name;
+                    chapterSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading chapters:', error);
+                chapterSelect.innerHTML = '<option value="">Error loading chapters</option>';
+            });
+    } else {
+        chapterSelect.innerHTML = '<option value="">First select a subject...</option>';
+    }
+}
+
+function initializeQuizForm() {
+    const form = document.getElementById('quizForm');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const subject_id = document.getElementById('subject').value;
+        const chapter_id = document.getElementById('chapter').value;
+        const title = document.getElementById('title').value;
+        const quiz_date = document.getElementById('quiz_date').value;
+        const quiz_time = document.getElementById('quiz_time').value;
+        const duration = document.getElementById('duration').value;
+
+        // Validate all fields
+        if (!subject_id || !chapter_id || !title || !quiz_date || !quiz_time || !duration) {
+            alert('Please fill in all required fields');
+            return false;
+        }
+
+        fetch('/admin/quiz/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subject_id: subject_id,
+                chapter_id: chapter_id,
+                title: title,
+                quiz_date: quiz_date,
+                quiz_time: quiz_time,
+                duration: duration
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Something went wrong');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/admin/dashboard';
+            } else {
+                alert('Error creating quiz: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error creating quiz: ' + error.message);
+        });
+    });
+}
+
+// Initialize the form when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeQuizForm();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question - Quiz Master{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    }
+    .option-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .option-input {
+        flex-grow: 1;
+    }
+    .btn-primary {
+        background-color: #0056b3;
+        color: white;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-add {
+        background-color: #5a6268;
+        color: white;
+    }
+</style>
+
+<div class="container">
+    <h2>Add Question to {{ quiz.name }}</h2>
+    
+    <form id="questionForm" onsubmit="return submitQuestion(event)">
+        <div class="form-group">
+            <label for="questionText">Question:</label>
+            <textarea class="form-control" id="questionText" required></textarea>
+        </div>
+
+        <h4>Options</h4>
+        <div id="optionsContainer">
+            <!-- Options will be added here -->
+        </div>
+
+        <button type="button" class="btn btn-add" onclick="addOption()">Add Option</button>
+        
+        <div class="form-actions mt-3">
+            <button type="submit" class="btn btn-primary">Save Question</button>
+            <a href="{{ url_for('manage_quiz', quiz_id=quiz.id) }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+let optionCount = 0;
+
+// Function to add a new option
+function addOption() {
+    optionCount++;
+    const container = document.getElementById('optionsContainer');
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'option-row';
+    optionDiv.innerHTML = `
+        <label>Option ${optionCount}:</label>
+        <input type="text" class="form-control option-input" required>
+        <div class="form-check">
+            <input type="radio" name="correctOption" class="form-check-input" value="${optionCount-1}" required>
+            <label class="form-check-label">Correct Answer</label>
+        </div>
+    `;
+    container.appendChild(optionDiv);
+}
+
+// Add initial two options
+window.onload = function() {
+    addOption();
+    addOption();
+};
+
+function submitQuestion(event) {
+    event.preventDefault();
+    
+    const questionText = document.getElementById('questionText').value;
+    const optionInputs = document.querySelectorAll('.option-input');
+    const correctOption = document.querySelector('input[name="correctOption"]:checked');
+    
+    if (!questionText || !correctOption) {
+        alert('Please fill in the question and select a correct answer');
+        return false;
+    }
+
+    const options = [];
+    optionInputs.forEach((input, index) => {
+        options.push({
+            text: input.value,
+            is_correct: (index === parseInt(correctOption.value))
+        });
+    });
+
+    fetch('/admin/quiz/{{ quiz.id }}/question/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quiz_id: {{ quiz.id }},
+            question_text: questionText,
+            options: options
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/admin/quiz/{{ quiz.id }}/manage';
+        } else {
+            alert('Error adding question: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding question. Please try again.');
+    });
+
+    return false;
+}
+</script>
+{% endblock %} 
