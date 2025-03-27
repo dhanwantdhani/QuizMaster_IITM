@@ -6,15 +6,30 @@ from models.quiz import Subject, Chapter, Quiz, Question, Option, Score
 # from models import Subject
 # from models import db
 from datetime import datetime
+from models.admin import Admin
 
 # Admin login
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
+    # Clear any existing flash messages when displaying the login page
+    if request.method == 'GET':
+        session.pop('_flashes', None)
+    
     if request.method == 'POST':
-        username, password = request.form.get('username'), request.form.get('password')
-        flash('Admin login successful!', 'success')
-        session['user_type'], session['username'] = 'admin', username
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        admin = Admin.query.filter_by(username='admin').first()
+        
+        if not admin or not admin.check_password(password):
+            flash('Invalid username or password', 'error')
+            return render_template('admin_login.html')
+        
+        # If credentials are correct
+        session['user_type'] = 'admin'
+        session['username'] = username
         return redirect(url_for('admin_dashboard'))
+            
     return render_template('admin_login.html')
 
 # Admin dashboard
@@ -244,18 +259,27 @@ def create_quiz():
     try:
         data = request.get_json()
         chapter_id = data.get('chapter_id')
-        name = data.get('title')  # We'll use this as the name
+        name = data.get('title')
+        quiz_date = data.get('quiz_date')
+        quiz_time = data.get('quiz_time')
+        duration = data.get('duration')
 
-        if not all([chapter_id, name]):
+        if not all([chapter_id, name, quiz_date, quiz_time, duration]):
             return jsonify({'success': False, 'message': 'All fields are required'}), 400
 
-        # Create new quiz with required fields from your model
+        # Parse the date and time
+        quiz_datetime = datetime.strptime(f"{quiz_date} {quiz_time}", "%Y-%m-%d %H:%M")
+        
+        # Convert duration from HH:MM to minutes
+        duration_parts = duration.split(':')
+        duration_minutes = int(duration_parts[0]) * 60 + int(duration_parts[1])
+
         new_quiz = Quiz(
             name=name,
             chapter_id=chapter_id,
-            created_at=datetime.utcnow(),
-            description=None,  # Optional field
-            duration=None      # Optional field
+            quiz_date=quiz_datetime,
+            duration=duration_minutes,
+            created_at=datetime.utcnow()
         )
 
         db.session.add(new_quiz)
@@ -265,7 +289,7 @@ def create_quiz():
 
     except Exception as e:
         db.session.rollback()
-        print(f"Error creating quiz: {str(e)}")  # Add this for debugging
+        print(f"Error creating quiz: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/admin/quiz/<int:quiz_id>/edit', methods=['GET'])
@@ -417,9 +441,14 @@ def edit_question(quiz_id, question_id):
 @admin_required
 def admin_delete_quiz_question(quiz_id, question_id):
     try:
+        # First delete all options associated with the question
         question = Question.query.get_or_404(question_id)
+        Option.query.filter_by(question_id=question.id).delete()
+        
+        # Then delete the question
         db.session.delete(question)
         db.session.commit()
+        
         return jsonify({'success': True})
     except Exception as e:
         db.session.rollback()

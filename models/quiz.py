@@ -25,6 +25,7 @@ class Quiz(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     duration = db.Column(db.Integer)  # in minutes
+    quiz_date = db.Column(db.DateTime)  # Make it nullable for now to handle existing records
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id', ondelete='CASCADE'), nullable=False)
     
