@@ -13,12 +13,9 @@ import controllers.quiz_controller
 # Run the application
 if __name__ == '__main__':
     with app.app_context():
-        # Drop all tables
-        db.drop_all()
-        
-        # Create all tables with new schema
+        # Create all tables if they don't exist
         db.create_all()
         
-        # Initialize admin account
+        # Initialize admin account if it doesn't exist
         init_admin(app)
     app.run(debug=True)

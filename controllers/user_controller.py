@@ -1,8 +1,10 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from app_factory import app, db
 from models.user import User
+from models.quiz import Subject, Chapter, Quiz, Score
 from controllers.decorators import user_required
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 
 # Main landing page
 @app.route('/')
@@ -71,14 +73,60 @@ def register():
 # User dashboard
 @app.route('/dashboard')
 @user_required
-def dashboard(): return render_template('user_dashboard.html')
+def dashboard():
+    user = User.query.get(session['user_id'])
+    subjects = Subject.query.all()
+    return render_template('user_dashboard.html', user=user, subjects=subjects)
 
-# User scores
-@app.route('/scores')
+# User profile
+@app.route('/profile')
 @user_required
-def scores(): return render_template('scores.html')
+def profile():
+    user = User.query.get(session['user_id'])
+    return render_template('profile.html', user=user)
+
+# Edit profile
+@app.route('/profile/edit', methods=['GET', 'POST'])
+@user_required
+def edit_profile():
+    user = User.query.get(session['user_id'])
+    if request.method == 'POST':
+        user.fullname = request.form.get('fullname')
+        user.qualification = request.form.get('qualification')
+        user.dob = datetime.strptime(request.form.get('dob'), '%Y-%m-%d').date()
+        
+        # Handle password change if provided
+        new_password = request.form.get('new_password')
+        if new_password:
+            user.set_password(new_password)
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    return render_template('edit_profile.html', user=user)
 
 # User summary
 @app.route('/summary')
 @user_required
-def summary(): return render_template('summary.html') 
+def summary():
+    user = User.query.get(session['user_id'])
+    scores = Score.query.filter_by(user_id=user.id).order_by(Score.created_at.desc()).all()
+    subjects = Subject.query.all()
+    return render_template('summary.html', user=user, scores=scores, subjects=subjects)
+
+# User scores
+@app.route('/scores')
+@user_required
+def scores():
+    user = User.query.get(session['user_id'])
+    scores = Score.query.filter_by(user_id=user.id).order_by(Score.created_at.desc()).all()
+    return render_template('scores.html', user=user, scores=scores)
+
+# View chapter and its quizzes
+@app.route('/chapter/<int:chapter_id>')
+@user_required
+def view_chapter(chapter_id):
+    user = User.query.get(session['user_id'])
+    chapter = Chapter.query.get_or_404(chapter_id)
+    return render_template('view_chapter.html', chapter=chapter, user=user) 

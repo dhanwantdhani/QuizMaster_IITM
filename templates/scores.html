@@ -3,53 +3,117 @@
 {% block title %}Scores - Quiz Master{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Navigation Bar -->
-    <div class="nav-bar">
-        <div class="nav-links">
-            <a href="{{ url_for('dashboard') }}" class="nav-link">Home</a>
-            <a href="{{ url_for('scores') }}" class="nav-link active">Scores</a>
-            <a href="{{ url_for('summary') }}" class="nav-link">Summary</a>
-            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
-        </div>
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
-            <button class="search-btn">Search</button>
-        </div>
-        <div class="user-welcome">
-            Welcome {{ session.get('username', 'User') }}
-        </div>
+<div class="container mt-4">
+    <h2>Your Quiz Scores</h2>
+    
+    {% if scores %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Quiz</th>
+                    <th>Score</th>
+                    <th>Time Taken</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                <tr>
+                    <td>{{ score.quiz.name }}</td>
+                    <td>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar {% if score.score >= 70 %}bg-success{% elif score.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ score.score }}%"
+                                 aria-valuenow="{{ score.score }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ "%.1f"|format(score.score) }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if score.completion_time %}
+                            {{ (score.completion_time / 60)|int }} min {{ score.completion_time % 60 }} sec
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                    <td>{{ score.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Quiz Scores Section -->
-    <div class="content-box">
-        <h2 class="section-title">Quiz Scores</h2>
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Quiz Questions</th>
-                        <th>Date</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>OS</td>
-                        <td>xx/xx/yyyy</td>
-                        <td>3/8</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>IP</td>
-                        <td>xx/xx/yyyy</td>
-                        <td>12/15</td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- Score Statistics -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Average Score</h5>
+                    <p class="display-4 text-primary mb-0">
+                        {{ "%.1f"|format(scores|map(attribute='score')|list|sum / scores|length) }}%
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Highest Score</h5>
+                    <p class="display-4 text-success mb-0">
+                        {{ "%.1f"|format(scores|map(attribute='score')|list|max) }}%
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Quizzes Taken</h5>
+                    <p class="display-4 text-info mb-0">
+                        {{ scores|length }}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">No Scores Yet!</h4>
+        <p>You haven't taken any quizzes yet. Start your learning journey by taking a quiz!</p>
+        <hr>
+        <p class="mb-0">
+            <a href="{{ url_for('list_quizzes') }}" class="alert-link">Browse available quizzes</a>
+        </p>
+    </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ url_for('list_quizzes') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Take More Quizzes
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home me-2"></i>Back to Dashboard
+        </a>
+    </div>
 </div>
+
+<style>
+.progress {
+    border-radius: 50px;
+}
+.progress-bar {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
 {% endblock %} 

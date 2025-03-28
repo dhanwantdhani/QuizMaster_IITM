@@ -3,60 +3,171 @@
 {% block title %}Summary - Quiz Master{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Navigation Bar -->
-    <div class="nav-bar">
-        <div class="nav-links">
-            <a href="{{ url_for('dashboard') }}" class="nav-link">Home</a>
-            <a href="{{ url_for('scores') }}" class="nav-link">Scores</a>
-            <a href="{{ url_for('summary') }}" class="nav-link active">Summary</a>
-            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+<div class="container mt-4">
+    <h2 class="mb-4">Performance Summary</h2>
+
+    {% if scores %}
+    <!-- Overall Statistics -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x text-primary mb-3"></i>
+                    <h5 class="card-title">Average Score</h5>
+                    <p class="display-5 mb-0">{{ "%.1f"|format(scores|map(attribute='score')|list|sum / scores|length) }}%</p>
+                </div>
+            </div>
         </div>
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
-            <button class="search-btn">Search</button>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-trophy fa-2x text-success mb-3"></i>
+                    <h5 class="card-title">Highest Score</h5>
+                    <p class="display-5 mb-0">{{ "%.1f"|format(scores|map(attribute='score')|list|max) }}%</p>
+                </div>
+            </div>
         </div>
-        <div class="user-welcome">
-            Welcome {{ session.get('username', 'User') }}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-tasks fa-2x text-info mb-3"></i>
+                    <h5 class="card-title">Quizzes Taken</h5>
+                    <p class="display-5 mb-0">{{ scores|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x text-warning mb-3"></i>
+                    <h5 class="card-title">Avg. Time</h5>
+                    <p class="display-5 mb-0">
+                        {% set total_time = scores|map(attribute='completion_time')|list|sum %}
+                        {% set avg_time = total_time / scores|length %}
+                        {{ (avg_time / 60)|int }}m
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Summary Charts Section -->
-    <div class="content-box">
-        <h2 class="section-title">Summary Charts</h2>
-        <div class="charts-container">
-            <div class="chart-box">
-                <h3 class="chart-title">Subject wise most quizzes</h3>
-                <div class="bar-chart">
-                    <div class="bar" style="height: 30%; background-color: #99ccff;">
-                        <span class="bar-label">Maths</span>
+    <!-- Subject-wise Performance -->
+    <h3 class="mb-4">Subject-wise Performance</h3>
+    <div class="row">
+        {% for subject in subjects %}
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">{{ subject.name }}</h5>
+                        <span class="badge bg-primary">
+                            {{ subject.chapters|map(attribute='quizzes')|map('length')|sum }} Quizzes
+                        </span>
                     </div>
-                    <div class="bar" style="height: 80%; background-color: #66cc66;">
-                        <span class="bar-label">Physics</span>
+                    
+                    {% set subject_scores = [] %}
+                    {% for chapter in subject.chapters %}
+                        {% for quiz in chapter.quizzes %}
+                            {% for score in scores %}
+                                {% if score.quiz_id == quiz.id %}
+                                    {% set _ = subject_scores.append(score.score) %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if subject_scores %}
+                    <div class="progress mb-3" style="height: 25px;">
+                        {% set avg_score = subject_scores|sum / subject_scores|length %}
+                        <div class="progress-bar {% if avg_score >= 70 %}bg-success{% elif avg_score >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                             role="progressbar"
+                             style="width: {{ avg_score }}%"
+                             aria-valuenow="{{ avg_score }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ "%.1f"|format(avg_score) }}%
+                        </div>
                     </div>
-                    <div class="bar" style="height: 50%; background-color: #ff9999;">
-                        <span class="bar-label">Chemistry</span>
+                    <div class="row text-center">
+                        <div class="col">
+                            <small class="text-muted">Quizzes Taken</small>
+                            <h6 class="mb-0">{{ subject_scores|length }}</h6>
+                        </div>
+                        <div class="col">
+                            <small class="text-muted">Highest Score</small>
+                            <h6 class="mb-0">{{ "%.1f"|format(subject_scores|max) }}%</h6>
+                        </div>
+                        <div class="col">
+                            <small class="text-muted">Average Score</small>
+                            <h6 class="mb-0">{{ "%.1f"|format(avg_score) }}%</h6>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="chart-box">
-                <h3 class="chart-title">Month wise most quizzes attempted</h3>
-                <div class="pie-chart">
-                    <div class="pie-segment" style="--segment-start: 0; --segment-end: 0.3; --segment-color: #ff9999;">
-                        <span class="segment-label">Q3</span>
-                    </div>
-                    <div class="pie-segment" style="--segment-start: 0.3; --segment-end: 0.5; --segment-color: #ffcc66;">
-                        <span class="segment-label">Q1</span>
-                    </div>
-                    <div class="pie-segment" style="--segment-start: 0.5; --segment-end: 0.8; --segment-color: #99ccff;">
-                        <span class="segment-label">Q2</span>
-                    </div>
-                    <div class="pie-segment" style="--segment-start: 0.8; --segment-end: 1; --segment-color: #66cc66;">
-                        <span class="segment-label">Q4</span>
-                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No quizzes taken in this subject yet.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
+
+    <!-- Recent Activity -->
+    <h3 class="mb-4">Recent Activity</h3>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Quiz</th>
+                            <th>Score</th>
+                            <th>Time Taken</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in scores[:5] %}
+                        <tr>
+                            <td>{{ score.quiz.name }}</td>
+                            <td>
+                                <span class="badge {% if score.score >= 70 %}bg-success{% elif score.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {{ "%.1f"|format(score.score) }}%
+                                </span>
+                            </td>
+                            <td>{{ (score.completion_time / 60)|int }}m {{ score.completion_time % 60 }}s</td>
+                            <td>{{ score.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">No Data Available</h4>
+        <p>You haven't taken any quizzes yet. Start your learning journey by taking a quiz!</p>
+        <hr>
+        <p class="mb-0">
+            <a href="{{ url_for('list_quizzes') }}" class="alert-link">Browse available quizzes</a>
+        </p>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.progress {
+    border-radius: 50px;
+}
+.progress-bar {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+</style>
 {% endblock %} 

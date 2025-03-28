@@ -3,41 +3,125 @@
 {% block title %}Take Quiz - Quiz Master{% endblock %}
 
 {% block content %}
-<div class="quiz-container">
-    <div class="quiz-header">
-        <h1 class="quiz-title">Start the Quiz</h1>
-        <div class="quiz-info">
-            <div class="question-counter">Q.No: <span>3/15</span></div>
-            <div class="timer">00:13:52</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ quiz.name }}</h2>
+            <p class="text-muted">{{ quiz.description }}</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Time Remaining</h5>
+                    <div id="timer" class="display-4 text-primary mb-0">
+                        <span id="minutes">{{ quiz.duration }}</span>:<span id="seconds">00</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="question-box">
-        <p class="question-text">......Question Statement......</p>
+    <form method="POST" id="quizForm" class="mt-4">
+        <input type="hidden" name="completion_time" id="completionTime" value="0">
         
-        <div class="options-list">
-            <div class="option">
-                <input type="radio" id="option1" name="answer">
-                <label for="option1">1) Option...</label>
+        {% for question in quiz.questions %}
+        <div class="card mb-4 question-card" id="question{{ loop.index }}">
+            <div class="card-header bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Question {{ loop.index }}</h5>
+                    <span class="badge bg-primary">{{ loop.index }}/{{ quiz.questions|length }}</span>
+                </div>
             </div>
-            <div class="option">
-                <input type="radio" id="option2" name="answer">
-                <label for="option2">2) Option...</label>
-            </div>
-            <div class="option">
-                <input type="radio" id="option3" name="answer" checked>
-                <label for="option3">3) Option...</label>
-            </div>
-            <div class="option">
-                <input type="radio" id="option4" name="answer">
-                <label for="option4">4) Option...</label>
+            <div class="card-body">
+                <p class="card-text">{{ question.text }}</p>
+                
+                <div class="options mt-4">
+                    {% for option in question.options %}
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" 
+                               name="question_{{ question.id }}" 
+                               value="{{ option.id }}" 
+                               id="option{{ option.id }}" required>
+                        <label class="form-check-label" for="option{{ option.id }}">
+                            {{ option.text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="quiz-actions">
-        <button class="btn btn-primary">Save and Next</button>
-        <button class="btn btn-success">Submit</button>
-    </div>
+        {% endfor %}
+        
+        <div class="d-flex justify-content-between mb-4">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Submit Quiz</button>
+        </div>
+    </form>
 </div>
+
+<style>
+.question-card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.question-card:hover {
+    transform: translateY(-2px);
+}
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+#timer {
+    font-family: 'Roboto Mono', monospace;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let duration = {{ quiz.duration }} * 60; // Convert minutes to seconds
+    let startTime = new Date().getTime();
+    let timer = duration;
+    
+    function updateTimer() {
+        let minutes = Math.floor(timer / 60);
+        let seconds = timer % 60;
+        
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('quizForm').submit();
+        }
+        
+        timer--;
+    }
+    
+    // Update timer every second
+    let timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+    
+    // Handle form submission
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to submit this quiz? You cannot change your answers after submission.')) {
+            e.preventDefault();
+            return;
+        }
+        
+        clearInterval(timerInterval);
+        let endTime = new Date().getTime();
+        let timeTaken = Math.floor((endTime - startTime) / 1000); // Time taken in seconds
+        document.getElementById('completionTime').value = timeTaken;
+    });
+});
+
+// Prevent form resubmission on page refresh
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+</script>
+
+<!-- Add Roboto Mono font for timer -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 {% endblock %} 

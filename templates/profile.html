@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Your Profile</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Username:</div>
+                        <div class="col-sm-9">{{ user.username }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Full Name:</div>
+                        <div class="col-sm-9">{{ user.fullname }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Qualification:</div>
+                        <div class="col-sm-9">{{ user.qualification }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Date of Birth:</div>
+                        <div class="col-sm-9">{{ user.dob.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Member Since:</div>
+                        <div class="col-sm-9">{{ user.created_at.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
